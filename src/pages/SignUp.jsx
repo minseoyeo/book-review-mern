@@ -30,7 +30,7 @@ export default function SignUp() {
       const data = await res.json();
       if  (data.success === false) {
         setLoading(false);
-        setError(error.message);
+        setError(data.message);
         return;
       }
       setLoading(false);
@@ -57,7 +57,7 @@ export default function SignUp() {
           className="border p-3 rounded-lg"  
         />
         <input 
-          type="text" 
+          type="email" 
           placeholder='email' 
           id='email' 
           onChange={handleChange}
