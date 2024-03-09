@@ -13,8 +13,8 @@ export default function Profile() {
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
-  const [showListingsError, setShowListingsError] = useState(false);
-  const [userListings, setUserListings] = useState([]);
+  const [showReviewsError, setShowReviewsError] = useState(false);
+  const [userReviews, setUserReviews] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -107,25 +107,25 @@ export default function Profile() {
     }
   };
 
-  const handleShowListings = async () => {
+  const handleShowReview = async () => {
     try {
-      setShowListingsError(false);
-      const res = await fetch(`/api/user/listings/${currentUser._id}`);
+      setShowReviewsError(false);
+      const res = await fetch(`/api/user/review/${currentUser._id}`);
       const data = await res.json();
       if (data.success === false) {
-        setShowListingsError(true);
+        setShowReviewsError(true);
         return;
       }
 
-      setUserListings(data);
+      setUserReviews(data);
     } catch (error) {
-      setShowListingsError(true);
+      setShowReviewsError(true);
     }
   };
 
-  const handleListingDelete = async (listingId) => {
+  const handleReviewDelete = async (reviewId) => {
     try {
-      const res = await fetch(`/api/listing/delete/${listingId}`, {
+      const res = await fetch(`/api/review/delete/${reviewId}`, {
         method: 'DELETE',
       });
       const data = await res.json();
@@ -134,8 +134,8 @@ export default function Profile() {
         return;
       }
 
-      setUserListings((prev) =>
-        prev.filter((listing) => listing._id !== listingId)
+      setUserReviews((prev) =>
+        prev.filter((review) => review._id !== reviewId)
       );
     } catch (error) {
       console.log(error.message);
@@ -239,48 +239,48 @@ export default function Profile() {
         {updateSuccess ? 'User is updated successfully!' : ''}
       </p>
 
-      <button onClick={handleShowListings} className='text-green-700 w-full'>
+      <button onClick={handleShowReview} className='text-green-700 w-full'>
         Show Reviews
       </button>
       <p className='text-red-700 mt-5'>
-        {showListingsError ? 'Error showing reviews' : ''}
+        {showReviewsError ? 'Error showing reviews' : ''}
       </p>
 
-      {userListings && userListings.length > 0 && (
+      {userReviews && userReviews.length > 0 && (
         <div className="flex flex-col gap-4">
           <h1 className='text-center mt-7 text-2xl font-semibold'>
             Your Reviews
           </h1>
 
-          {userListings.map((listing) => (
+          {userReviews.map((review) => (
             <div 
-              key={listing._id} 
+              key={review._id} 
               className="border rounded-lg p-3 flex justify-between items-center gap-4"
             >
-              <Link to={`/listing/${listing._id}`}>
+              <Link to={`/review/${review._id}`}>
                 <img 
-                  src={listing._imageUrls[0]} 
-                  alt="listing cover" 
+                  src={review._imageUrls[0]} 
+                  alt="review cover" 
                   className='h-16 w-16 object-contain'
                 />
               </Link>
 
               <Link
                 className='text-slate-700 font-semibold hover:underline truncate flex-1'
-                to={`/listing/${listing._id}`}
+                to={`/review/${review._id}`}
               >
-                <p>{listing.name}</p>
+                <p>{review.name}</p>
               </Link>
 
               <div className="flex flex-col items-center">
                 <button
-                  onClick={() => handleListingDelete(listing._id)}
+                  onClick={() => handleReviewDelete(review._id)}
                   className='text-red-700 uppercase'
                 >
                   Delete
                 </button>
                 
-                <Link to={`/update-listing/${listing._id}`}>
+                <Link to={`/update-review/${review._id}`}>
                   <button className='text-green-700 uppercase'>Edit</button>
                 </Link>
               </div>
