@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import PrivateRoute from "./components/PrivateRoute";
 import Profile from "./pages/Profile";
 import SignUp from "./pages/SignUp";
+import CreateReview from "./pages/CreateReview";
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
 
         <Route element={<PrivateRoute/>}>
           <Route path="/profile" element={<Profile/>}/>
+          <Route path="/create-review" element={<CreateReview/>} />
         </Route>
       </Routes>
     </BrowserRouter>
