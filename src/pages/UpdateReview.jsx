@@ -1,4 +1,4 @@
-import { useState} from 'react';
+import { useState, useEffect} from 'react';
 import {
   getDownloadURL,
   getStorage,
@@ -7,23 +7,36 @@ import {
 } from 'firebase/storage';
 import { app } from '../firebase';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-export default function CreateReview() {
+function UpdateReview() {
 
   const { currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const params = useParams();
   const [formData, setFormData] = useState({
     title: '',
     author: '',
-    data: new Date(),
-    review: '',
+    date: new Date(),
+    review: ''
   });
-
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  console.log(formData);
+  useEffect(() => {
+    const fetchReview = async () => {
+      const reviewId = params.reviewid;
+      const res = await fetch(`/api/review/get/${reviewId}`);
+      const data = await res.json();
+      if (data.success === false) {
+        console.log(data.message);
+        return;
+      };
+      setFormData(data);
+    };
+
+    fetchReview();
+  }, []);
 
   const handleChange = (e) => {
     if (e.target.type === 'text' || e.target.type === 'textarea') {
@@ -37,29 +50,38 @@ export default function CreateReview() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (formData.title.length < 1 
+          || formData.author.length < 1 
+          || formData.review.length < 1
+        ) 
+      {
+        return setError('You must type at least one')
+      }
       setLoading(true);
       setError(false);
-      const res = await fetch('/api/review/create', {
+      
+      const res = await fetch(`/api/review/update/${params.reviewId}`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           ...formData,
           userRef: currentUser._id,
         }),
       });
+
       const data = await res.json();
       setLoading(false);
       if (data.success === false) {
         setError(data.message);
       }
-      navigate(`/listing/${data._id}`)
+      navigate(`/review/${data._id}`);
     } catch (error) {
       setError(error.message);
       setLoading(false);
     }
-  };
+  }
 
   return (
     <main className='p-3 max-w-4xl mx-auto'>
@@ -115,3 +137,5 @@ export default function CreateReview() {
     </main>
   )
 }
+
+export default UpdateReview
