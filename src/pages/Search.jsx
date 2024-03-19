@@ -1,6 +1,6 @@
 import { useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
-import Review from '../components/Review';
+import ReviewItem from '../components/ReviewItem';
 
 export default function Search() {
 
@@ -53,7 +53,7 @@ export default function Search() {
           <p className='text-xl text-slate-700'>No review found!</p>
         )}
         {loading && reviews && reviews.map((review) => 
-          <Review key={review._id} review={review}/>)}
+          <ReviewItem key={review._id} review={review}/>)}
 
           {showMore && (
             <button

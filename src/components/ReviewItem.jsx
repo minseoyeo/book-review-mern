@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { MdLocationOn } from "react-icons/md";
 
-export default function Review({ review }) {
+export default function ReviewItem({ review }) {
   return (
     <div className='bg-white shadow-md hover:shadow-lg transition-shadow rounded-lg w-full sm:-[330px]'>
       <Link to={`/review/${review._id}`}>
