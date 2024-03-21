@@ -12,7 +12,7 @@ export default function Review() {
     const fetchReview = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/review/get?${params.reviewId}`);
+        const res = await fetch(`/api/review/get/${params.reviewId}`);
         const data = await res.json();
         if (data.success === false) {
           setError(true);
@@ -41,7 +41,7 @@ export default function Review() {
         <div className="">
           <h3 className='text-semibold text-lg text-slate-700 truncate'>{review.title}</h3>
           <h5 className='text-sm text-slate-600 truncate w-full'>{review.author}</h5>
-          <p className='text-sm text-gray-600'>{review.date}</p>
+          <p className='text-sm text-gray-600'>{review.rating}</p>
           <p className='text-sm text-slate-800'>{review.review}</p>
         </div>
       )}

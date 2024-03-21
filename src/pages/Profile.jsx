@@ -2,7 +2,7 @@ import { useDispatch, useSelector} from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useRef, useState, useEffect} from 'react';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
-import {app} from  '../firebase';
+import {app} from  '../firebase.js';
 import { updateUserStart, updateUserFailure, updateUserSuccess, deleteUserFailure, deleteUserStart, deleteUserSuccess, signOutUserStart } from "../redux/user/userSlice.js";
 
 export default function Profile() {
@@ -107,10 +107,10 @@ export default function Profile() {
     }
   };
 
-  const handleShowReview = async () => {
+  const handleShowReviews = async () => {
     try {
       setShowReviewsError(false);
-      const res = await fetch(`/api/user/review/${currentUser._id}`);
+      const res = await fetch(`/api/user/reviews/${currentUser._id}`);
       const data = await res.json();
       if (data.success === false) {
         setShowReviewsError(true);
@@ -151,7 +151,7 @@ export default function Profile() {
       >
         <input
           onChange={(e) => setFile(e.target.files[0])}
-          type="text" 
+          type="file" 
           ref={fileRef}
           hidden
           accept='image/*'
@@ -165,17 +165,17 @@ export default function Profile() {
         />
 
         <p className='text-sm self-center'>
-          {fileUploadError ?
-            (<span className='text-red-700'>
-              Error Image upload (Image must be less than 2 mb)
-            </span>) : filePerc > 0 && filePerc < 100 ?
-            (<span className='text-slate-700'>
-              {`Uploading ${filePerc}%`}
-            </span>) : (filePerc === 100 ? (
-              <span className='text-green-700'>
-                Image Successfully Uploaded!
-              </span>) : ('')
-            )}
+          {fileUploadError ? (
+            <span className='text-red-700'>
+              Error Image upload (image must be less than 2 mb)
+            </span>
+          ) : filePerc > 0 && filePerc < 100 ? (
+            <span className='text-slate-700'>{`Uploading ${filePerc}%`}</span>
+          ) : filePerc === 100 ? (
+            <span className='text-green-700'>Image successfully uploaded!</span>
+          ) : (
+            ''
+          )}
         </p>
 
         <input 
@@ -213,6 +213,7 @@ export default function Profile() {
 
         <Link 
           className='bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-95'
+          to={'/create-review'}
         >
           Creat a Book Review
         </Link>
@@ -239,7 +240,7 @@ export default function Profile() {
         {updateSuccess ? 'User is updated successfully!' : ''}
       </p>
 
-      <button onClick={handleShowReview} className='text-green-700 w-full'>
+      <button onClick={handleShowReviews} className='text-green-700 w-full'>
         Show Reviews
       </button>
       <p className='text-red-700 mt-5'>
@@ -259,7 +260,7 @@ export default function Profile() {
             >
               <Link to={`/review/${review._id}`}>
                 <img 
-                  src={review._imageUrls[0]} 
+                  src={review.imageUrls[0]} 
                   alt="review cover" 
                   className='h-16 w-16 object-contain'
                 />

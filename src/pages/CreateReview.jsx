@@ -16,7 +16,7 @@ export default function CreateReview() {
   const [formData, setFormData] = useState({
     title: '',
     author: '',
-    data: new Date(),
+    rating: 0,
     review: '',
   });
 
@@ -26,7 +26,7 @@ export default function CreateReview() {
   console.log(formData);
 
   const handleChange = (e) => {
-    if (e.target.type === 'text' || e.target.type === 'textarea') {
+    if (e.target.type === 'text' || e.target.type === 'textarea' || e.target.type === 'number') {
       setFormData({
         ...formData,
         [e.target.id]: e.target.value,
@@ -85,13 +85,14 @@ export default function CreateReview() {
             value={formData.author}
           />
           <input
-            type="date" 
-            placeholder='review date'
-            id='date'
+            type="number" 
+            id='rating'
+            min='1'
+            max='5'
             required
             className='border p-3 rounded-lg'
             onChange={handleChange}
-            value={formData.date}
+            value={formData.rating}
           />          
           <h4 className='text-2xl font-semibold my-2'>Review</h4> 
           <textarea
@@ -105,6 +106,7 @@ export default function CreateReview() {
         </div>
 
         <button
+          disabled={loading}
           className='p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80'
         >
           {loading ? 'Creating...' : 'Create Listing'}

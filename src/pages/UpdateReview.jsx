@@ -9,7 +9,7 @@ import { app } from '../firebase';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 
-function UpdateReview() {
+export default function UpdateReview() {
 
   const { currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ function UpdateReview() {
   const [formData, setFormData] = useState({
     title: '',
     author: '',
-    date: new Date(),
+    rating: 0,
     review: ''
   });
   const [error, setError] = useState(false);
@@ -39,7 +39,7 @@ function UpdateReview() {
   }, []);
 
   const handleChange = (e) => {
-    if (e.target.type === 'text' || e.target.type === 'textarea') {
+    if (e.target.type === 'text' || e.target.type === 'textarea' || e.target.type === 'number') {
       setFormData({
         ...formData,
         [e.target.id]: e.target.value,
@@ -55,7 +55,7 @@ function UpdateReview() {
           || formData.review.length < 1
         ) 
       {
-        return setError('You must type at least one')
+        return setError('You must type something!')
       }
       setLoading(true);
       setError(false);
@@ -85,9 +85,9 @@ function UpdateReview() {
 
   return (
     <main className='p-3 max-w-4xl mx-auto'>
-      <h1 className='text-3xl font-semibold text-center my-10'>Create a Review</h1>
-      <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
-        <div className="flex items-center gap-4 flex-1">      
+      <h1 className='text-3xl font-semibold text-center my-10'>Update a Review</h1>
+      <form onSubmit={handleSubmit} className='flex flex-col sm:flex-row gap-4'>
+        <div className="flex flex-col gap-4 flex-1">      
           <input
             type="text" 
             placeholder='title'
@@ -107,13 +107,15 @@ function UpdateReview() {
             value={formData.author}
           />
           <input
-            type="date" 
-            placeholder='review date'
-            id='date'
+            type="number" 
+            placeholder='rating'
+            id='rating'
+            min='1'
+            max='5'
             required
             className='border p-3 rounded-lg'
             onChange={handleChange}
-            value={formData.date}
+            value={formData.rating}
           />          
           <h4 className='text-2xl font-semibold my-2'>Review</h4> 
           <textarea
@@ -127,9 +129,10 @@ function UpdateReview() {
         </div>
 
         <button
+          disabled={loading}
           className='p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80'
         >
-          {loading ? 'Creating...' : 'Create Listing'}
+          {loading ? 'Updating...' : 'Update Review'}
         </button>
 
         {error && <p className='text-red-700 text-sm'>{error}</p>}
@@ -137,5 +140,3 @@ function UpdateReview() {
     </main>
   )
 }
-
-export default UpdateReview
